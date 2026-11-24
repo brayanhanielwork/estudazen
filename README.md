@@ -108,3 +108,17 @@ A V4 corrige o corte de conteúdo nas folhas do fichário. Em telas amplas, cada
 A V5 elimina a folga verde entre as páginas, remove o bloqueio de altura/rolagem interna, elimina blocos didáticos repetidos e adapta a altura das folhas ao conteúdo completo. Em desktop, as páginas permanecem contíguas, com lombada central. Em celular, ficam empilhadas. A formatação preserva a proporção A4 quando há espaço; páginas com conteúdo longo expandem verticalmente para não cortar a matéria.
 
 Para atualizar o site, substitua **styles.css**, **app.js** e **index.html**. Os demais arquivos permanecem compatíveis. A chave de progresso continua `estudazen_v3`.
+
+
+## V6 — Layout corrigido e validado
+
+A V6 corrige dois problemas de composição vistos nas capturas: painel lateral da tela inicial comprimido em três colunas, e blocos de aula escapando do fundo do fichário.
+
+**Mudanças:**
+- `styles.css`: correções de grade no painel inicial, separação das regras do leitor e da página inicial, altura das duas folhas determinada pelo conteúdo, rodapé de navegação no fluxo normal, transição para layout empilhado em telas pequenas.
+- `index.html`: parâmetro `?v=6` nos arquivos para forçar atualização de cache no GitHub Pages.
+- Os outros arquivos foram mantidos para não alterar a lógica de pontuação e o progresso dos estudantes.
+
+**Teste visual e estrutural:** o pacote foi testado no Chromium nas larguras 1720, 1366, 1024, 768 e 390 pixels. Também foram conferidas as 21 duplas de páginas do curso em 1720, 1024 e 390 pixels, sem sobreposição de folhas, textos, borda ou navegação.
+
+**Para atualizar:** substitua `styles.css` e `index.html` na raiz do repositório, faça o commit e atualize a aba. Nenhum reset de `localStorage` é necessário.

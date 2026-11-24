@@ -166,3 +166,169 @@ body{overflow-x:hidden}
 }
 @media(max-width:350px){.concept-grid{grid-template-columns:1fr}.topbar .brand{font-size:18px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* ===================================================================
+   ESTUDAZEN V6 — LAYOUT CONSOLIDADO: DASHBOARD + FICHÁRIO SEM CORTES
+   As duas folhas acompanham a altura do conteúdo mais extenso.
+   O aspecto A4 é apenas uma referência visual, nunca altura máxima.
+   =================================================================== */
+:root { --reader-max-width: 1390px; }
+html { overflow-x: clip; }
+body { overflow-x: clip; }
+#app, main, section, article, aside { min-width: 0; }
+
+/* Início: painel lateral é VERTICAL. Não herda os três cards do leitor. */
+.dashboard {
+  width: min(100%, 1620px);
+  max-width: 1620px;
+  padding: 0 clamp(12px, 1.6vw, 24px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(290px, 320px);
+  align-items: start;
+  gap: 20px;
+  margin: 14px auto 48px;
+}
+.dashboard-main { min-width: 0; }
+.dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.dashboard .rightcol {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-self: start;
+}
+.dashboard .rightcol .panel { width: 100%; min-width: 0; padding: 20px; }
+.dashboard .rightcol .panel h3 { font-size: 21px; }
+.dashboard .rightcol .rankitem { gap: 10px; flex-wrap: wrap; font-size: 12px; }
+.dashboard .rightcol .rankname { flex: 1 1 90px; min-width: 0; }
+.dashboard .rightcol .chapterlist button { width: 100%; white-space: normal; }
+.dashboard .rightcol .status-chip { white-space: normal; max-width: 100%; }
+.dashboard .rightcol .smallmuted { overflow-wrap: break-word; }
+.dashboard .hero h1 { overflow-wrap: break-word; }
+
+/* Leitor: uma só grade, com duas páginas lado a lado e altura FLUIDA. */
+.bookview {
+  display: block;
+  width: 100%;
+  max-width: 1660px;
+  margin: 6px auto;
+  padding: 0 clamp(12px, 2vw, 24px) 48px;
+}
+.bookview .reader { width: 100%; max-width: var(--reader-max-width); margin: 0 auto; min-width: 0; }
+.bookview .book {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-auto-rows: auto;
+  align-items: stretch;
+  gap: 0;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible;
+  padding: 14px 20px 14px 30px;
+}
+.bookview .book .page {
+  box-sizing: border-box;
+  width: auto;
+  min-width: 0;
+  align-self: stretch;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+  overflow: visible !important;
+  display: flex;
+  flex-direction: column;
+  padding: 30px clamp(18px, 2.5vw, 40px) 44px;
+}
+.bookview .book .page > * { flex-shrink: 0; }
+.bookview .book .page.left { border-radius: 22px 0 0 22px; }
+.bookview .book .page.right { border-radius: 0 22px 22px 0; }
+.bookview .book .page .lesson-remark { margin-top: 14px; }
+.bookview .book .page .page-tag { align-self: flex-start; }
+.bookview .book .page .pageline { position: absolute; bottom: 14px; right: 24px; }
+.bookview .book .lesson-top { align-items: start; }
+.bookview .book .concept-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.bookview .book .lesson-section,
+.bookview .book .lesson-synthesis,
+.bookview .book .lesson-example,
+.bookview .book .lesson-glossary,
+.bookview .book .lesson-remark { max-width: 100%; }
+
+/* Navegação segue o fluxo abaixo do fichário, sem cobrir parágrafos. */
+.bookview .book-footer {
+  position: relative !important;
+  z-index: 2;
+  bottom: auto !important;
+  margin: 16px auto 0;
+  max-width: 100%;
+  width: fit-content;
+}
+.bookview .notice { margin-top: 18px !important; }
+.bookview > .rightcol {
+  max-width: var(--reader-max-width);
+  width: 100%;
+  margin: 28px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: 16px;
+}
+.bookview > .rightcol .panel { min-width: 0; }
+
+/* Comportamento visual do fólio: as duas folhas têm o mesmo fundo;
+   o conteúdo mais longo determina a altura de AMBAS. */
+.bookview .book::after { pointer-events: none; }
+.page .bodytxt,
+.page .integrated-copy,
+.page .example-copy,
+.page .concept-tile p,
+.page .lesson-summary p { hyphens: none; overflow-wrap: break-word; word-break: normal; }
+
+@media (max-width: 1120px) {
+  .dashboard { grid-template-columns: minmax(0, 1fr); }
+  .dashboard .rightcol {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+  }
+  .dashboard .rightcol .panel { min-width: 0; }
+  .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bookview > .rightcol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 830px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .dashboard .rightcol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bookview .book {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 12px 10px 12px 19px;
+  }
+  .bookview .book::after { display: none; }
+  .bookview .book .page { width: 100%; padding: 28px clamp(18px, 4vw, 35px) 44px; }
+  .bookview .book .page.left { border-radius: 17px 17px 3px 3px; border-right: 1px solid #e5d5bd; border-bottom: 1px solid #e5d5bd; }
+  .bookview .book .page.right { border-radius: 3px 3px 17px 17px; border-left: 1px solid #e5d5bd; }
+  .bookview .book .lesson-top { grid-template-columns: 1fr 1fr; }
+  .bookview > .rightcol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 590px) {
+  .dashboard { padding: 0 10px; }
+  .dashboard .rightcol { grid-template-columns: 1fr; }
+  .bookview { padding: 0 8px 36px; }
+  .bookview .book { padding: 8px 8px 8px 14px; border-width: 7px; }
+  .bookview .book .page { padding: 25px 18px 40px; }
+  .bookview .book .lesson-top { grid-template-columns: 1fr; }
+  .bookview .book .concept-grid { grid-template-columns: 1fr 1fr; }
+  .bookview > .rightcol { grid-template-columns: 1fr; }
+  .bookview .book-footer { width: 100%; justify-content: space-between; gap: 4px; }
+  .bookview .book-footer .counter { font-size: 11px; }
+  .bookview .book-footer .btn { font-size: 11px; padding: 9px; }
+}
+@media (max-width: 375px) {
+  .bookview .book .concept-grid { grid-template-columns: 1fr; }
+  .bookview .book-footer { flex-wrap: wrap; justify-content: center; }
+}
