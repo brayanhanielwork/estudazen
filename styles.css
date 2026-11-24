@@ -242,3 +242,32 @@ body{color:var(--ink)}
   .hotspot[data-tip]:hover::after,.hotspot[data-tip]:focus-visible::after,.term-highlight[data-tip]:hover::after,.term-highlight[data-tip]:focus-visible::after{transform:none}
   .hotspot[data-tip]::before,.term-highlight[data-tip]::before{left:28px; margin-left:0}
 }
+
+
+/* ==== V4: correção de corte de conteúdo ==== */
+.book{align-items:stretch}
+.page{
+  height: min(82vh, 980px);
+  max-height: min(82vh, 980px);
+  overflow-y: auto !important;
+  overflow-x: visible !important;
+  scrollbar-width: thin;
+  scrollbar-color: #9bb16c #f2ebdf;
+  padding-right: 18px;
+}
+.page::-webkit-scrollbar{width:10px}
+.page::-webkit-scrollbar-track{background:#f2ebdf;border-radius:999px}
+.page::-webkit-scrollbar-thumb{background:#9bb16c;border-radius:999px;border:2px solid #f2ebdf}
+.page::after{inset:14px}
+.structured-stack{padding-bottom:18px}
+.interactive-figure,.miniature{overflow:visible !important}
+.hotspot,.term-highlight{z-index:2}
+.hotspot[data-tip]::after,.term-highlight[data-tip]::after,
+.hotspot[data-tip]::before,.term-highlight[data-tip]::before{z-index:20}
+.page .bodytxt,.page .mini-copy,.page .callout,.page .tip,.page .summary-box li,.page .mini-caption,.page .glossary-list li{overflow-wrap:break-word}
+@media (max-width: 1020px){
+  .page{height:auto;max-height:none;overflow:visible !important;padding-right:20px}
+}
+@media (max-width: 760px){
+  .page{height:auto;max-height:none;overflow:visible !important;padding-right:18px}
+}

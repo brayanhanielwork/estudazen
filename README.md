@@ -96,3 +96,8 @@ Quando a configuração estiver ativa, o site exibirá o modo **Global** na tela
 - Esta versão usa a chave local `estudazen_v3` no navegador, facilitando a aplicação das páginas novas.
 - O glossário, as ilustrações interativas e o layout A4 funcionam sem bibliotecas externas.
 - O ranking global depende de conectividade com o serviço configurado.
+
+
+## Correção da versão V4
+
+A V4 corrige o corte de conteúdo nas folhas do fichário. Em telas amplas, cada página mantém altura estável com rolagem interna quando o conteúdo excede o espaço visual. Em telas menores, a altura volta a ser automática para evitar truncamento.
