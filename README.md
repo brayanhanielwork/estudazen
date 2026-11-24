@@ -101,3 +101,10 @@ Quando a configuração estiver ativa, o site exibirá o modo **Global** na tela
 ## Correção da versão V4
 
 A V4 corrige o corte de conteúdo nas folhas do fichário. Em telas amplas, cada página mantém altura estável com rolagem interna quando o conteúdo excede o espaço visual. Em telas menores, a altura volta a ser automática para evitar truncamento.
+
+
+## V5 — correção de composição do fichário
+
+A V5 elimina a folga verde entre as páginas, remove o bloqueio de altura/rolagem interna, elimina blocos didáticos repetidos e adapta a altura das folhas ao conteúdo completo. Em desktop, as páginas permanecem contíguas, com lombada central. Em celular, ficam empilhadas. A formatação preserva a proporção A4 quando há espaço; páginas com conteúdo longo expandem verticalmente para não cortar a matéria.
+
+Para atualizar o site, substitua **styles.css**, **app.js** e **index.html**. Os demais arquivos permanecem compatíveis. A chave de progresso continua `estudazen_v3`.

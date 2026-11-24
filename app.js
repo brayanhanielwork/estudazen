@@ -245,13 +245,21 @@ function annotate(text, entries){
 }
 function figureFor(guide, kind){
   const items = guide.items.length ? guide.items : [{ label:'Síntese', icon:'📘', detail: guide.overview }];
-  return `<figure class="interactive-figure"><div class="miniature" data-kind="${esc(kind)}">${items.map(item => `<button type="button" class="hotspot" data-tip="${esc(item.detail)}" aria-label="${esc(item.label)} — ${esc(item.detail)}"><span class="spot-icon">${esc(item.icon)}</span><span>${esc(item.label)}</span></button>`).join('')}</div><figcaption class="mini-caption">Passe o mouse, ou toque com foco, para ler as dicas da ilustração.</figcaption></figure>`;
+  return `<figure class="learning-visual" aria-label="Esquema interativo sobre o conteúdo"><div class="visual-elements" data-kind="${esc(kind)}">${items.map(item=>`<button type="button" class="hotspot" data-tip="${esc(item.detail)}" title="${esc(item.detail)}" aria-label="${esc(item.label)}: ${esc(item.detail)}"><span class="spot-icon">${esc(item.icon)}</span>${esc(item.label)}</button>`).join('')}</div><figcaption class="visual-hint" aria-live="polite">Passe o mouse ou toque em um conceito para ver uma explicação breve.</figcaption></figure>`;
 }
 function lessonPage(module, index){
-  const page = module.pages[index];
-  const guide = pageGuide(page);
-  const glossary = glossaryEntries(page, guide);
-  return `<span class="page-tag">${esc(page.tag)}</span><h2>${esc(page.title)}</h2><p class="lead">${annotate(page.lead, glossary)}</p><div class="topic-grid">${figureFor(guide, page.visual)}<div class="summary-box"><h4>Foco desta página</h4><ul><li>${esc(guide.overview)}</li><li>Conceito-chave: <span class="term-highlight" tabindex="0" data-tip="${esc(page.term[1])}">${esc(page.term[0])}</span>.</li><li>A leitura termina com síntese integrada e exemplo prático para fixação.</li></ul></div></div><div class="structured-stack"><section class="text-block"><h4>Conceito central</h4><p class="bodytxt">${annotate(page.text, glossary)}</p></section>${guide.items.length ? `<section class="text-block"><h4>Pontos em destaque</h4><div class="mini-cards">${guide.items.map(item => `<article class="mini-card"><h5><span>${esc(item.icon)}</span> ${esc(item.label)}</h5><p class="mini-copy">${esc(item.detail)}</p></article>`).join('')}</div></section>` : ''}<section class="text-block"><h4>Integração do tema</h4><p class="bodytxt">${annotate(guide.integrated, glossary)}</p></section><section class="text-block"><h4>Exemplo prático</h4><p class="bodytxt">${annotate(guide.example, glossary)}</p></section><section class="text-block"><h4>Glossário rápido</h4><ul class="glossary-list">${glossary.slice(0,4).map(item => `<li><span class="term-highlight" tabindex="0" data-tip="${esc(item.meaning)}">${esc(item.term)}</span> — ${esc(item.meaning)}</li>`).join('')}</ul></section></div><div class="callout"><b>📌 Conceito-chave — ${esc(page.term[0])}</b><br>${esc(page.term[1])}</div><div class="tip">💡 ${esc(page.tip)}</div>`;
+  const p = module.pages[index];
+  const g = pageGuide(p);
+  const glossary = glossaryEntries(p, g);
+  const items = g.items;
+  return `<span class="page-tag">${esc(p.tag)}</span><h2>${esc(p.title)}</h2><p class="lead">${annotate(p.lead,glossary)}</p>
+  <div class="lesson-top">${figureFor(g,p.visual)}<div class="lesson-summary"><strong>Em poucas palavras</strong><p>${esc(g.overview)}</p></div></div>
+  <section class="lesson-section lesson-intro"><h4>Entenda o conceito</h4><p class="bodytxt">${annotate(p.text,glossary)}</p></section>
+  <section class="lesson-section"><h4>Entenda cada elemento</h4><div class="concept-grid">${items.map(item=>`<div class="concept-tile"><h5>${esc(item.icon)} ${esc(item.label)}</h5><p>${esc(item.detail)}</p></div>`).join('')}</div></section>
+  <section class="lesson-synthesis"><h4>Como os conceitos se relacionam</h4><p class="integrated-copy">${annotate(g.integrated,glossary)}</p></section>
+  <section class="lesson-example"><h4>Aplicação prática</h4><p class="example-copy">${annotate(g.example,glossary)}</p></section>
+  <div class="lesson-glossary"><b>Termo essencial:</b> <span tabindex="0" class="term-highlight" data-tip="${esc(p.term[1])}" title="${esc(p.term[1])}">${esc(p.term[0])}</span> — ${esc(p.term[1])}</div>
+  <div class="lesson-remark">✦ ${esc(p.tip)}</div>`;
 }
 function questionPage(module, qi){
   const q = module.quiz[qi], id = `${moduleIndex}-${qi}`, answered = profile().answers[id], pick = quizPicked[id] ?? (answered?.chosen ?? -1);
@@ -312,6 +320,19 @@ function clickHandler(e){
   if(x.hasAttribute('data-ai-review')){ let answer = $('#essay').value.trim(); if(answer.length < 30){ notify('Escreva pelo menos algumas frases antes de enviar.'); return; } profile().essay = answer; save(); let prompt = `Corrija esta resposta discursiva de Fundamentos de Administração. Questão: ${ESSAY.prompt} Avalie domínio das funções (0,5 ponto), aplicação ao caso (0,6), exemplos/justificativa (0,5) e clareza (0,4). Dê nota de 0 a 2 com justificativa, sugestões precisas e exemplo melhorado. Minha resposta: ${answer}`; navigator.clipboard?.writeText(prompt).then(()=>notify('Pedido copiado! Cole no ChatGPT para receber a correção.')).catch(()=>notify('Selecione e copie seu texto.')); window.open('https://chatgpt.com/','_blank','noopener,noreferrer'); return; }
   if(x.hasAttribute('data-save-notes')){ profile().notes = $('#notes').value; save(); notify('Anotações salvas.'); }
 }
+// Hotspot interactions: a contextual hint appears below the diagram without covering the text.
+function showFigureHint(el){
+  const figure=el.closest('.learning-visual');
+  if(!figure) return;
+  const hint=figure.querySelector('.visual-hint');
+  if(!hint) return;
+  figure.querySelectorAll('.hotspot.active').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  hint.textContent=el.dataset.tip || 'Explore os conceitos do esquema.';
+}
+document.addEventListener('pointerover',e=>{const el=e.target.closest?.('.hotspot');if(el)showFigureHint(el)});
+document.addEventListener('focusin',e=>{const el=e.target.closest?.('.hotspot');if(el)showFigureHint(el)});
+document.addEventListener('click',e=>{const el=e.target.closest?.('.hotspot');if(el)showFigureHint(el)});
 document.addEventListener('click', clickHandler);
 document.addEventListener('submit', e => { if(e.target.id==='loginform'){ e.preventDefault(); if(!ensure($('#username').value)){ notify('Digite um nome válido'); return; } moduleIndex = profile().lastModule || 0; spread = profile().lastSpread || 0; view='home'; render(); }});
 document.addEventListener('input', e => { if(e.target.id==='essay') essay = e.target.value; });
